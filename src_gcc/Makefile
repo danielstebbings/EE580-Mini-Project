@@ -1,9 +1,9 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -O2 -Iinc
+CFLAGS = -Wall -Wextra -O0 -Iinc
 SRC_DIR = src
 BUILD_DIR = build
 TARGET = $(BUILD_DIR)/main
-SRCS = $(SRC_DIR)/main.c $(SRC_DIR)/filter.c
+SRCS = $(SRC_DIR)/main.c $(SRC_DIR)/filter.c $(SRC_DIR)/iir.c
 OBJS = $(SRCS:$(SRC_DIR)/%.c=$(BUILD_DIR)/%.o)
 
 .PHONY: all clean run debug

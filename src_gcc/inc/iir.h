@@ -8,22 +8,30 @@
 
 #include <stdint.h>
 
-typedef float float32_t;
+//typedef float float32_t;
+
+#define N_NUM 3
+#define N_DEN 2
 
 /// @brief SOS IIR Filter
-typedef struct
-{
+/// coeffs stored as:
+/// 
+/// b_0, b_1, ..., b_(lnum-1), a1, a2, ..., a(lden-1) 
+typedef struct iir_filter_t {
     int nstages;
-    float32_t (*num)[3];
-    float32_t (*den)[2];
-    float32_t  g;
+    int lnum;
+    int lden;
+    float  g;
+    float* coeffs;
+    } iir_filter_t;
 
-} iir_filter_t;
 
 void sos_filter(
-    float32_t *input, uint32_t input_length,
-    float32_t *output,
-    iir_filter_t *filt
+    float input[], uint32_t input_length,
+    float output[],
+    const iir_filter_t* filt
 );
+
+#define SOS_N 5
 
 #endif

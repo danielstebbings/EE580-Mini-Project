@@ -45,8 +45,13 @@ const iir_filter_t bp_filt = {
 int main(void)
 {
     sos_filter(chirp_coeffs, chirp_N, output,&lp_filt);
-
     record_output(output, chirp_N, LP_FILE);
+
+    sos_filter(chirp_coeffs, chirp_N, output,&hp_filt);
+    record_output(output, chirp_N, HP_FILE);
+
+    sos_filter(chirp_coeffs, chirp_N, output,&bp_filt);
+    record_output(output, chirp_N, BP_FILE);
 
 	return 0;
 }

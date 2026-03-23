@@ -30,7 +30,7 @@ void sos_filter(
 
     unsigned int xit, sit,cit, tit;
     for (xit = 0; xit < input_length; xit++) {
-        tdl[1][1] = input[xit];
+        tdl[0][0] = input[xit];
 
         for (sit = 0; sit < N; sit++) {
             // get the filter values 
@@ -47,8 +47,8 @@ void sos_filter(
             // In TDL: n is row 0, n-1 row 1, n-2 row 2, 
             // x[k] is tdl[][sit], y[k] is tdl[][sit+1]
             tdl[0][sit+1] = num[0]*tdl[0][sit]
-                            + num[0]*tdl[1][sit]
-                            + num[0]*tdl[2][sit]
+                            + num[1]*tdl[1][sit]
+                            + num[2]*tdl[2][sit]
                             - den[0]*tdl[1][sit+1]
                             - den[1]*tdl[2][sit+1];
         }

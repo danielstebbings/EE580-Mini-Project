@@ -1,17 +1,18 @@
-
+/**
+ * main.c
+ */
 #include <stdint.h>
+#include <stdio.h>
+
 #include "filter.h"
 #include "data.h"
 #include "iir.h"
+//#include "chirp.h"
+#include "mock_audio.h"
 
-#define DATA_FILE_1 "/home/preben/Documents/ee580_dsp/data1.txt"
-#define DATA_FILE_2 "/home/preben/Documents/ee580_dsp/data2.txt"
-
-#define LP_FILE "./lp.csv"
-#define BP_FILE "./bp.csv"
-#define HP_FILE "./hp.csv"
-
-float32_t output[chirp_N] = {0};
+#define LP_FILE "../data/lp.csv"
+#define BP_FILE "../data/bp.csv"
+#define HP_FILE "../data/hp.csv"
 
 iir_filter_t lp_filt = {
       lp_N_SOS,
@@ -37,24 +38,34 @@ iir_filter_t bp_filt = {
       lp_N_DEN,
       bp_G_SOS,
       bp_coeffs,
-   };
+   }; 
+
+// mock audiofile
+extern FILE *llvl_fid;
+extern FILE *buf_foid;
 
 
-/**
- * main.c
- */
+#define AUDIOBUF_LEN 512
+float audiobufin[AUDIOBUF_LEN] = {0};
+float audiobufout[AUDIOBUF_LEN] = {0};
+
+
 int main(void)
 {
+   printf("Main \n");
+   int bufit;
+   for (bufit = 0; bufit < LLVL_N_SAMPLES / AUDIOBUF_LEN; bufit++) {
+      printf("Buffer: %d \r",bufit);
+      get_audio_buf(audiobufin, AUDIOBUF_LEN);
+      sos_filter(audiobufin, AUDIOBUF_LEN, audiobufout,&lp_filt);
+      write_audio_buf(audiobufout, AUDIOBUF_LEN);
+   }
+   printf("\n");
 
+   fclose(llvl_fid);
+   fclose(buf_foid);
 
-    sos_filter(chirp_coeffs, chirp_N, output,&lp_filt);
-    record_output(output, chirp_N, LP_FILE);
-
-    sos_filter(chirp_coeffs, chirp_N, output,&hp_filt);
-    record_output(output, chirp_N, HP_FILE);
-
-    sos_filter(chirp_coeffs, chirp_N, output,&bp_filt);
-    record_output(output, chirp_N, BP_FILE);
+   printf("Done! \n");
 
 	return 0;
 }

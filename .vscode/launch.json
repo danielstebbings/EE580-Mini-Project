@@ -1,0 +1,15 @@
+{
+    "configurations": [
+        {
+            "type": "cppdbg",
+            "request": "launch",
+            "name": "Debug src_gcc/build/main",
+            "program": "${workspaceFolder}/src_gcc/build/main",
+            "cwd": "${workspaceFolder}/src_gcc/build/",
+            "stopAtEntry": true,
+            "preLaunchTask": "make debug",
+            "MIMode": "gdb",
+            "internalConsoleOptions": "neverOpen"
+        }
+    ]
+}

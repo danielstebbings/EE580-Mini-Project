@@ -155,6 +155,7 @@ The filters therefore require a tapped delay line that spans three samples for a
 == Optimisation and Profiling
 To achieve maximum real-time performance, the baseline IIR implementation was refined into an optimised version. Several hardware-specific techniques were employed:
 - Compiler Pragmas: \#pragma UNROLL and \#pragma MUST_ITERATE provided the compiler with loop count guarantees for software pipelining and loop unrolling.
+- Manual unrolling of filter cofficient access and pre calculation of array offsets.
 - SIMD and Intrinsics: The following intrinsics were used for more efficient data operations:
   - amem4: Accessed 32-bit words (two 16-bit samples) simultaneously.
   - \_spint and \_spack2: Efficiently converted floating-point results back to integer format with saturation to prevent overflow.
@@ -208,10 +209,6 @@ Key findings and achievements from the project include:
 = Figures and Tables
 
 == MATLAB Filter Design
-
-=== Desi
-
-
 #subpar.grid(
   figure(
     image("Subsections/matlab_figs/lp_freqz.svg", height:30%),

@@ -179,6 +179,7 @@ The ~34% improvement in cycle counts highlights the effectiveness of several key
 - Loop Unrolling and Pragmas: By using \#pragma UNROLL and \#pragma MUST_ITERATE, the compiler was able to schedule multiple instructions in parallel, taking advantage of the multiple execution units.
 - #acr("SIMD") Intrinsics: The use of \_amem4 allowed for simultaneous loading of two 16-bit samples into a single 32-bit register, effectively doubling the memory throughput. While \_sadd2 and \_spack2 allowed for addition of four 16-bit samples in a single instruction, while providing hardware-level saturation.
 
+The IIR filter implementation could be further optimised by leveraging fixed-point data types for faster arithmetic operations. For the highest level of optimisation possible, the filter implemntation could be written using linear assembly code.
 
 = Conclusion
 

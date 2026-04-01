@@ -105,7 +105,13 @@ Multiple optimisation methods were investigated, including #acr("SIMD") instruct
 
 == MATLAB Filter Design and Validation
 
-The initial phase involved designing three stable Infinite Impulse Response (IIR) filters using MATLAB Filter Designer to meet the previously specific spectral requirements.
+The initial phase involved designing three stable Infinite Impulse Response (IIR) filters using MATLAB Filter Designer to meet the previously specific spectral requirements. All filters were designed to have the same order, with 10 #acr("SOS") selected to achieve strong filtering performance and to provide an opportunity to fully demonstrate optimisation due to the large coefficient count.
+
+The designed filters had very good performance. The magnitude and phase responses are shown in @fig:freqz. As these are #acr("IIR") filters the phase response is non-linear, however this does not affect our application as the audio is in a single channel. If it were stereo, this may cause issues with surround sound.
+
+The magnitude response of the filters is compared in @fig:filters_overlaid. It can be seen that there is a slight notch where the transition regions of the different filters meet, which will cause some slight attenuation in the final system.
+
+
 
 == Embedded System Implementation
 
@@ -138,6 +144,13 @@ To optimize memory usage, the processed audio output is produced by only process
 === Filter Integration
 During Playback, the system polls DIP switches S2:6-8 to identify which filters (#acr("LP"), #acr("BP"), #acr("HP")) are active.
 - Parallel Summation: If multiple filters are selected, the input chunk is passed through each active filter independently. The resulting outputs are summed together before being stored for playback.
+
+The filters are implemented using several second order sections. The $k$th section can be described as in @eq:sos and requires 5 multiply & accumulate stages. As the gain term is applied to the whole equation, it can be precalculated for all stages and applied only at the final stage. 
+
+// y[n] = b0x[n] + b1x[n-1] + b2x[n-2] -a1y[n-1] - a2y[n-2]
+$ y_k [n] = G_k #math.times (b_(k,0) x[n] + b_(k,1) x[n-1] + b_(k,2) x[n-2] - a_(k,1) y[n-1] - a_(k,2) y[n-2]) $ <eq:sos>
+
+The filters therefore require a tapped delay line that spans three samples for all filter stages plus one for the input. In our implementation, this was a $3 #math.times 11$ array.
 
 == Optimisation and Profiling
 To achieve maximum real-time performance, the baseline IIR implementation was refined into an optimised version. Several hardware-specific techniques were employed:
@@ -193,6 +206,44 @@ Key findings and achievements from the project include:
 #pagebreak()
 
 = Figures and Tables
+
+== MATLAB Filter Design
+
+=== Desi
+
+
+#subpar.grid(
+  figure(
+    image("Subsections/matlab_figs/lp_freqz.svg", height:30%),
+    caption: [Low Pass Filter],
+  ),<fig:freqz_lp>,
+  figure(
+    image("Subsections/matlab_figs/bp_freqz.svg", height:30%),
+    caption: [Band Pass Filter],
+  ),<fig:freqz_bp>,
+  figure(
+    image("Subsections/matlab_figs/hp_freqs.svg", height:30%),
+    caption: [High Pass Filter],
+  ),<fig:freqz_hp>,
+
+
+  columns: (1fr),
+  caption: [Frequency and phase response of implemented filters],
+  label: <fig:freqz>,
+)
+
+#figure(
+  image("Subsections/matlab_figs/filter_magnitudes.svg", width:75%),
+  caption: "Magnitude response of filters overlaid. Cutoff frequencies shown with dashed red lines."
+) <fig:filters_overlaid>
+
+#figure(
+  image("Subsections/matlab_figs/Filter_Performance.svg", height: 50%),
+  caption: "Filter response to chirp signal input. The horizontal line shows the average power of the input signal. The vertical lines show the cut off frequencies."
+)
+
+
+
 
 == Embedded Systems
 

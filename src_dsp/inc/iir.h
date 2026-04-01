@@ -12,6 +12,9 @@
 
 #define N_NUM 3
 #define N_DEN 2
+#define SOS_N 5
+
+#define BUFFER_SIZE 500
 
 /// @brief SOS IIR Filter
 /// coeffs stored as:
@@ -32,6 +35,13 @@ void sos_filter(
     iir_filter_t* filt
 );
 
-#define SOS_N 5
+void opt_sos_filter(
+    float input[],// uint32_t input_length,
+    float output[],
+    iir_filter_t* filt
+);
+
+void clear_tdl();
+
 
 #endif
